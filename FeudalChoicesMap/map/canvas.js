@@ -3,6 +3,7 @@ var ctx = null;
 var tileW = 40, tileH = 40;
 var mapW = 10, mapH = 10;
 var currentTick = 0;
+var worker;
 
 var gameMap = [
     0,0,0,0,0,0,0,0,0,0,
@@ -19,28 +20,11 @@ var gameMap = [
 
 window.onload = function(){
     ctx = this.document.getElementById('map').getContext('2d');
+    peasant = new Peasant("blue");
     this.requestAnimationFrame(colorTiles);
-    this.requestAnimationFrame(this.drawGrid);
+    this.requestAnimationFrame(this.drawLoop);
     this.ctx.font = 'bold 10pt sans-sherif';
 };
-
-function drawGrid(){
-    if (ctx==null) {return;}
-    
-    for (var x = tileW; x < (tileW*mapW) ; x += tileW) {
-        ctx.moveTo(0.5 + x, 0);
-        ctx.lineTo(0.5 + x, (tileW*mapW));
-    }
-
-    for (var x = tileH; x < (tileH*mapH); x += tileH) {
-        ctx.moveTo(0, 0.5 + x);
-        ctx.lineTo((tileH*mapH), 0.5 + x);
-    }
-
-    ctx.strokeStyle = "black";
-    ctx.stroke();
-    requestAnimationFrame(drawGrid);
-}
 
 function colorTiles(){
     if (ctx==null) {return;}
@@ -67,5 +51,10 @@ function colorTiles(){
         }
     }
 
-    requestAnimationFrame(colorTiles);
+}
+
+function drawLoop(){
+    if (ctx==null) {return;}
+    peasant.draw(ctx,40,80);
+    requestAnimationFrame(drawLoop);
 }
