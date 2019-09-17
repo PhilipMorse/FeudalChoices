@@ -1,32 +1,28 @@
 
 var ctx = null;
 var tileW = 40, tileH = 40;
-var mapW = 10, mapH = 10;
+var mapW = 5, mapH = 5;
 var currentTick = 0;
 var worker;
+var socket;
 
 var gameMap = [
-    0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,1,0,0,0,0,0,
-    0,0,0,0,1,0,0,0,0,0,
-    0,0,0,0,1,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0
+    0,0,0,0,1,1,0,0,0
 ];
 
 window.onload = function(){
     ctx = this.document.getElementById('map').getContext('2d');
     peasant = new Peasant("blue");
-    this.requestAnimationFrame(colorTiles);
+    this.requestAnimationFrame(function(){colorTiles(gameMap);});
     this.requestAnimationFrame(this.drawLoop);
     this.ctx.font = 'bold 10pt sans-sherif';
+    socket = io.connect('http://localhost:5000');
+    socket.on('grid', function(msg){
+        requestAnimationFrame(function(){colorTiles(msg);});
+    });
 };
 
-function colorTiles(){
+function colorTiles(game_map){
     if (ctx==null) {return;}
     
     var sec = Math.floor(Date.now()/1000);
@@ -37,7 +33,7 @@ function colorTiles(){
     
     for(var y = 0; y <mapH; y++){
         for (var x = 0; x < mapW; x++) {
-            switch (gameMap[((y*mapW)+x)]) {
+            switch (parseInt(game_map[((y*mapW)+x)])) {
                 case 0:
                     ctx.fillStyle= "#999999";
                     break;
@@ -58,3 +54,12 @@ function drawLoop(){
     peasant.draw(ctx,40,80);
     requestAnimationFrame(drawLoop);
 }
+
+document.getElementById("sendButton").addEventListener('click', function(){
+    var grid_text = document.getElementById("grid_text").value;
+    grid_text = grid_text.split(" ");
+    console.log(grid_text);
+    grid_text = grid_text.map(Number);
+    console.log(grid_text);
+    socket.emit('grid', grid_text);
+});

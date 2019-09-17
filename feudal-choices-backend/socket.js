@@ -5,13 +5,14 @@ module.exports = function(server){
     io.on("connection", function(socket) {
         // player has connected
         console.log("Player connected");
-
         socket.on("disconnect", function() {
             console.log("Player disconnected");
         });
-
         socket.on("send message", function(data) {
             io.emit("new message", data);
+        });
+        socket.on("grid", function(data) {
+            io.emit("grid", data);
         });
     });
 };
