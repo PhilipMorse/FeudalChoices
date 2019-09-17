@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const io = require('socket.io');
+const http = require('http');
 
 require('dotenv').config();
 
@@ -17,12 +19,16 @@ connection.once('open', () => {
     console.log('MongoDB database connection established successfully');
 });
 
+var server = http.createServer(app);
+
 const wealthRouter = require('./routes/wealth');
 const usersRouter = require('./routes/users');
 
 app.use('/wealth', wealthRouter);
 app.use('/users', usersRouter);
 
-app.listen(port, () => {
+require('./socket')(server);
+
+server.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
 });
