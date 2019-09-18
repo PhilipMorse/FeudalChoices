@@ -16,10 +16,15 @@ window.onload = function(){
     this.requestAnimationFrame(function(){colorTiles(gameMap);});
     this.requestAnimationFrame(this.drawLoop);
     this.ctx.font = 'bold 10pt sans-sherif';
-    socket = io.connect('http://localhost:5000');
-    socket.on('grid', function(msg){
-        requestAnimationFrame(function(){colorTiles(msg);});
-    });
+    try{
+        socket = io.connect('http://localhost:5000');
+        socket.on('grid', function(msg){
+            requestAnimationFrame(function(){colorTiles(msg);});
+        });
+    }
+    catch(err){
+        console.log(err);
+    };
 };
 
 function colorTiles(game_map){

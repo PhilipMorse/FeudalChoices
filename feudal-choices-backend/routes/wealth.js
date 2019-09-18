@@ -38,7 +38,6 @@ router.route('/update/:id').post((req, res) => {
         .then(wealth => {
             wealth.username = req.body.username;
             wealth.description = req.body.description;
-
             wealth.save()
                 .then(() => res.json('Wealth Updated!'))
                 .catch(err => res.status(400).json('Error: ' + err));

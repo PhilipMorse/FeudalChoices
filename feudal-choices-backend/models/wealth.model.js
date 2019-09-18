@@ -7,6 +7,12 @@ const wealthSchema = new Schema({
     description: { type: String },
     wood: { type: Number, required: true, default: 0 },
     stone: { type: Number, required: true, default: 0 },
+    woodcutting: { type: Number, required: true, default: 0 },
+    mining: { type: Number, required: true, default: 0 },
+    farming: { type: Number, required: true, default: 0 },
+    food: { type: Number, required: true, default: 0 },
+    armysize: { type: Number, required: true, default: 0 },
+    armylevel: { type: Number, required: true, default: 0 },
 }, {
     timestamps: true,
 });
