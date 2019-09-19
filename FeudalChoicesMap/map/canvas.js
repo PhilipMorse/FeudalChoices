@@ -4,10 +4,7 @@ var tileW = 40, tileH = 40;
 var mapW = 5, mapH = 5;
 var currentTick = 0;
 var socket;
-var unitArray = [
-    ['owner1', 40, 80, "red"],
-    ['owner2', 80, 80, 'blue'],
-    ['owner3', 80, 40, 'green']];
+var players = {};
 
 var gameMap = [
     0,0,0,0,1,1,0,0,0
@@ -15,8 +12,6 @@ var gameMap = [
 
 window.onload = function(){
     ctx = this.document.getElementById('map').getContext('2d');
-    this.requestAnimationFrame(function(){colorTiles(gameMap);});
-    this.requestAnimationFrame(this.drawUnits);
     try{
         socket = io.connect('http://localhost:5000');
         socket.on('grid', function(msg){
@@ -24,6 +19,7 @@ window.onload = function(){
             this.requestAnimationFrame(this.drawUnits);
         });
         socket.on('active_players', function(msg){
+            players = msg;
             var str = '<ul>';
             console.log(msg);
             for (var val in msg){
@@ -32,14 +28,16 @@ window.onload = function(){
 
             str += '</ul>';
             document.getElementById("active_players_div").innerHTML = str;
+            requestAnimationFrame(drawUnits);
         });
         socket.on('units', function(msg){
-            this.requestAnimationFrame(this.drawUnits);
+            requestAnimationFrame(drawUnits);
         });
     }
     catch(err){
         console.log(err);
     };
+    this.requestAnimationFrame(function(){colorTiles(gameMap);});
     this.loadButtons();
 };
 
@@ -72,10 +70,12 @@ function colorTiles(game_map){
 
 function drawUnits(){
     if (ctx==null) {return;}
-    unitArray.forEach(element => {
+    console.log('here');
+    for (var val in players){
+        console.log(players[val]);
         var temp_unit = new Unit();
-        temp_unit.draw(ctx, element[0], element[1], element[2], element[3]);
-    });
+        temp_unit.draw(ctx, players[val]['player_name'], players[val]['pos_x'], players[val]['pos_y'], players[val]['color']);
+    }
 }
 
 function loadButtons(){
