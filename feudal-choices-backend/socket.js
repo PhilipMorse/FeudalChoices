@@ -5,7 +5,12 @@ module.exports = function (server) {
     io.on("connection", function (socket) {
         // player has connected
         console.log("Player connected");
-        active_players[socket.id] = ["Player", 100, 100, "Black"];
+        active_players[socket.id] = {
+            'player_name':'Player',
+            'pos_x':100,
+            'pos_y':100,
+            'color':'black'
+            };
         io.emit("active_players", active_players);
         socket.on("disconnect", function () {
             console.log("Player disconnected");
@@ -25,7 +30,9 @@ module.exports = function (server) {
             io.emit("active_players", active_players);
         });
         socket.on("name_change", function (data) {
-            active_player_ids[socket.id][0] = data;
+            active_players[socket.id]['player_name'] = data;
+            console.log(socket.id + " has changed name to " + active_players[socket.id]['player_name']);
+            io.emit("active_players", active_players);
         });
     });
 };

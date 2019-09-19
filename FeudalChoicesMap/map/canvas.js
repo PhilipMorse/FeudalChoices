@@ -25,9 +25,9 @@ window.onload = function(){
         });
         socket.on('active_players', function(msg){
             var str = '<ul>';
-            
+            console.log(msg);
             for (var val in msg){
-                str += '<li>' + msg[val][0] + '</li>';
+                str += '<li>' + msg[val]['player_name'] + '</li>';
             }
 
             str += '</ul>';
