@@ -3,8 +3,8 @@ var ctx = null;
 var tileW = 40, tileH = 40;
 var mapW = 5, mapH = 5;
 var currentTick = 0;
-var worker;
 var socket;
+var unitArray = ['a'];
 
 var gameMap = [
     0,0,0,0,1,1,0,0,0
@@ -12,19 +12,31 @@ var gameMap = [
 
 window.onload = function(){
     ctx = this.document.getElementById('map').getContext('2d');
-    peasant = new Peasant("blue");
     this.requestAnimationFrame(function(){colorTiles(gameMap);});
-    this.requestAnimationFrame(this.drawLoop);
+    this.requestAnimationFrame(this.drawUnits);
     this.ctx.font = 'bold 10pt sans-sherif';
     try{
         socket = io.connect('http://localhost:5000');
         socket.on('grid', function(msg){
             requestAnimationFrame(function(){colorTiles(msg);});
+            this.requestAnimationFrame(this.drawUnits);
+        });
+        socket.on('active_players', function(msg){
+            var str = '<ul>';
+            msg.forEach(element => {
+                str += '<li>' + element + '</li>';
+            });
+            str += '</ul>';
+            document.getElementById("active_players_div").innerHTML = str;
+        });
+        socket.on('units', function(msg){
+            this.requestAnimationFrame(this.drawUnits);
         });
     }
     catch(err){
         console.log(err);
     };
+    this.loadButtons();
 };
 
 function colorTiles(game_map){
@@ -54,17 +66,32 @@ function colorTiles(game_map){
 
 }
 
-function drawLoop(){
+function drawUnits(){
     if (ctx==null) {return;}
-    peasant.draw(ctx,40,80);
-    requestAnimationFrame(drawLoop);
+    unitArray.forEach(element => {
+        var temp_unit = new Unit();
+        temp_unit.draw(ctx, 40, 40);
+        //TODO: draw units here peasant.draw(ctx,40,80);
+    });
 }
 
-document.getElementById("sendButton").addEventListener('click', function(){
-    var grid_text = document.getElementById("grid_text").value;
-    grid_text = grid_text.split(" ");
-    console.log(grid_text);
-    grid_text = grid_text.map(Number);
-    console.log(grid_text);
-    socket.emit('grid', grid_text);
-});
+function loadButtons(){
+    document.getElementById("sendButton").addEventListener('click', function(){
+        var grid_text = document.getElementById("grid_text").value;
+        grid_text = grid_text.split(" ");
+        console.log(grid_text);
+        grid_text = grid_text.map(Number);
+        console.log(grid_text);
+        socket.emit('grid', grid_text);
+    });
+
+    document.getElementById("channel_send").addEventListener('click', function(){
+        var channel = document.getElementById("channel").value;
+        socket.on(channel, function(msg){
+            document.getElementById('channel_return').innerHTML = msg;
+        });
+        var channel_input = document.getElementById("channel_input").value;
+        socket.emit(channel, channel_input);
+    });
+
+}

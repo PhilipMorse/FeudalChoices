@@ -7,7 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" type="text/javascript"></script>
-    <script src="peasant.js" type="text/javascript"></script>
+    <script src="unit.js" type="text/javascript"></script>
+    <script src="canvas.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -17,9 +18,18 @@
     <div>
         <h1 id="currentTick">0</h1>
     </div>
+    <div id = "active_players_div" style="background-color:lightgreen">
+    </div>
     <input type="text" id="grid_text"></input>
-    <button id = 'sendButton'>SendGrid</button>
-    <script src="canvas.js" type="text/javascript"></script>
+    <button id='sendButton'>SendGrid</button>
+    <div style="background-color:lightblue">
+        <h4>Channel</h4>
+        <input type="text" id="channel"></input>
+        <h4>Channel_input</h4>
+        <input type="text" id="channel_input"></input>
+        <button id='channel_send'>Send to Socket</button>
+        <h4 id='channel_return'>Return</h4>
+    </div>
 </body>
 
 </html>

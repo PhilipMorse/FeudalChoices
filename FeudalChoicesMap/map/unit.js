@@ -1,5 +1,5 @@
 
-class Peasant {
+class Unit {
     constructor(col) {
         this.col = col;
         this.draw = function (c,pos_x,pos_y) {
