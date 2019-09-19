@@ -4,7 +4,10 @@ var tileW = 40, tileH = 40;
 var mapW = 5, mapH = 5;
 var currentTick = 0;
 var socket;
-var unitArray = ['a'];
+var unitArray = [
+    ['owner1', 40, 80, "red"],
+    ['owner2', 80, 80, 'blue'],
+    ['owner3', 80, 40, 'green']];
 
 var gameMap = [
     0,0,0,0,1,1,0,0,0
@@ -14,7 +17,6 @@ window.onload = function(){
     ctx = this.document.getElementById('map').getContext('2d');
     this.requestAnimationFrame(function(){colorTiles(gameMap);});
     this.requestAnimationFrame(this.drawUnits);
-    this.ctx.font = 'bold 10pt sans-sherif';
     try{
         socket = io.connect('http://localhost:5000');
         socket.on('grid', function(msg){
@@ -70,8 +72,7 @@ function drawUnits(){
     if (ctx==null) {return;}
     unitArray.forEach(element => {
         var temp_unit = new Unit();
-        temp_unit.draw(ctx, 40, 40);
-        //TODO: draw units here peasant.draw(ctx,40,80);
+        temp_unit.draw(ctx, element[0], element[1], element[2], element[3]);
     });
 }
 
