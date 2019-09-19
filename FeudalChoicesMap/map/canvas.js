@@ -25,9 +25,11 @@ window.onload = function(){
         });
         socket.on('active_players', function(msg){
             var str = '<ul>';
-            msg.forEach(element => {
-                str += '<li>' + element + '</li>';
-            });
+            
+            for (var val in msg){
+                str += '<li>' + msg[val][0] + '</li>';
+            }
+
             str += '</ul>';
             document.getElementById("active_players_div").innerHTML = str;
         });

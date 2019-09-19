@@ -1,18 +1,15 @@
-var active_players = [];
+var active_players = {};
 
 module.exports = function (server) {
     var io = require('socket.io')(server);
     io.on("connection", function (socket) {
         // player has connected
         console.log("Player connected");
-        active_players.push(socket.id);
+        active_players[socket.id] = ["Player", 100, 100, "Black"];
         io.emit("active_players", active_players);
         socket.on("disconnect", function () {
             console.log("Player disconnected");
-            var index = active_players.indexOf(socket.id);
-            if (index > -1) {
-                active_players.splice(index, 1);
-            }
+            delete active_players[socket.id];
             io.emit("active_players", active_players);
         });
         socket.on("send message", function (data) {
@@ -27,5 +24,9 @@ module.exports = function (server) {
         socket.on("active_players", function (data) {
             io.emit("active_players", active_players);
         });
+        socket.on("name_change", function (data) {
+            active_player_ids[socket.id][0] = data;
+        });
     });
 };
+
